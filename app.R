@@ -181,7 +181,7 @@ server <- function(input, output) {
     # creating the output variable to store playertable
     output$player_table = renderTable({ playertable() })
     
-    # creating barcharts
+    # creating barcharts for Team Wins & Points tab
     output$wins_bar_plot = renderPlot({ ggplot(wl1()[2:9,],aes(winner,no_of_wins,fill=winner))+geom_bar(stat = "identity")+ theme_classic()+xlab("Teams")+ ylab("Number Of Wins")+theme(axis.text.x=element_text(color="white"),legend.position = "none",axis.title=element_text(size=14),plot.background=element_rect(colour="white"))+geom_text(aes(x=winner,(no_of_wins+0.6),label = no_of_wins,size=7)) })
     
     output$points_bar_plot = renderPlot({ ggplot(playertable(),aes(Teams,Points,fill=Teams))+
@@ -190,7 +190,7 @@ server <- function(input, output) {
             geom_text(aes(Teams,(Points+1),label=Points,size=7)) })
     
     
-    # Season Outputs --------------------------------------------------------
+    # Season analysis --------------------------------------------------------
     
     output$top_10_batsman <- renderPlot({
         filter(df %>% group_by(batsman, season) %>% summarise(runs = sum(batsman_runs)), 
@@ -275,7 +275,7 @@ server <- function(input, output) {
             labs(x = 'Bowler', y = '# of times 4 Wickets') + theme(axis.text.x = element_text(angle = 25, hjust = 1))
     })
     
-    # Performance Outputs -----------------------------------------------------
+    # Performance tab Outputs -----------------------------------------------------
     
     output$batting_opponents <- renderUI({
         
