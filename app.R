@@ -28,8 +28,8 @@ ui <- dashboardPage(
     dashboardSidebar( tags$style(HTML('.main-sidebar{width: 220px;}')),  # contains menu items for quick navigation
                       sidebarMenu( # to define list of menu items
                           menuItem('About', tabName = 'about', icon = icon('pen')),
+                          menuItem('IPL - Overview', tabName = 'summary', icon = icon('chart-bar')),
                           menuItem('Season Statistics', tabName = 'Season', icon = icon('chart-bar')),
-                          menuItem('Top Performances - By Season', tabName = 'season', icon = icon('chart-bar')),
                           menuItem('Team Wins & Points - Histograms ', tabName = 'Teamwins', icon = icon('chart-bar')),
                           menuItem("Source code", icon = icon("code"), href = "https://github.com/pavanalakshmi/AMOD_5250/blob/main/app.R")
                       )
@@ -90,7 +90,64 @@ ui <- dashboardPage(
                     )
             ),
             
-            # Season Statistics -----------------------------------------------------------------
+           
+            # Overview -----------------------------------------------------------------
+            
+            tabItem(tabName = 'summary',
+                    
+                    shinydashboard::box(title = 'Overview',
+                                        width = 12,
+                                        solidHeader = T, 
+                                        collapsible = F,
+                                        background  = 'black',
+                                        fluidRow(
+                                            infoBoxOutput('matches'),tags$style('#matches {width:250px;}'),
+                                            infoBoxOutput('teams'),tags$style('#teams {width:250px;}'),
+                                            infoBoxOutput('runs'),tags$style('#runs {width:250px;}'),
+                                            infoBoxOutput('wickets'),tags$style('#wickets {width:250px;}'),
+                                            infoBoxOutput('seasons'),tags$style('#seasons {width:250px;}'),
+                                            infoBoxOutput('mom'),tags$style('#mom {width:250px;}'),
+                                            infoBoxOutput('sixes'),tags$style('#sixes {width:250px;}'),
+                                            infoBoxOutput('fours'),tags$style('#fours {width:250px;}')
+                                        )),
+                    tags$p('Expand to see details', style = 'font-size: 120%;margin-left:2.5em;'),
+                    
+                    shinydashboard::box(title = 'Season Winners',
+                                        width = 12,
+                                        background  = 'black',
+                                        solidHeader = T, 
+                                        collapsible = T,
+                                        collapsed = T,
+                                        fluidRow(
+                                            valueBox(tags$p('2008', style = 'font-size: 40%;text-align: center;'), div(img(src = 'RR.jpg', height = '80', width = '100'),style='text-align: center;'), 
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2009', style = 'font-size: 40%;text-align: center;'), div(img(src = 'DC.png', height = '80', width = '100'),style='text-align: center;'), 
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2010', style = 'font-size: 40%;text-align: center;'), div(img(src = 'csk.jpg', height = '80', width = '100'),style='text-align: center;'), 
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2011', style = 'font-size: 40%;text-align: center;'), div(img(src = 'csk.jpg', height = '80', width = '100'),style='text-align: center;'),  
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2012', style = 'font-size: 40%;text-align: center;'), div(img(src = 'KKR.png', height = '80', width = '100'),style='text-align: center;'), 
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2013', style = 'font-size: 40%;text-align: center;'), div(img(src = 'mi.jpg', height = '80', width = '100'),style='text-align: center;'),  
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2014', style = 'font-size: 40%;text-align: center;'), div(img(src = 'KKR.png', height = '80', width = '100'),style='text-align: center;'), 
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2015', style = 'font-size: 40%;text-align: center;'), div(img(src = 'mi.jpg', height = '80', width = '100'),style='text-align: center;'),  
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2016', style = 'font-size: 40%;text-align: center;'), div(img(src = 'srh.png', height = '80', width = '100'),style='text-align: center;'),  
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2017', style = 'font-size: 40%;text-align: center;'), div(img(src = 'mi.jpg', height = '80', width = '100'),style='text-align: center;'),  
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2018', style = 'font-size: 40%;text-align: center;'), div(img(src = 'csk.jpg', height = '80', width = '100'),style='text-align: center;'),  
+                                                     icon = NULL, width = 2, color = 'black'),
+                                            valueBox(tags$p('2019', style = 'font-size: 40%;text-align: center;'), div(img(src = 'mi.jpg', height = '80', width = '100'),style='text-align: center;'),  
+                                                     icon = NULL, width = 2, color = 'black')
+                                        )
+                    )
+            ),
+            
+             # Season Statistics -----------------------------------------------------------------
             
             tabItem(tabName = 'Season',
                     
@@ -104,55 +161,12 @@ ui <- dashboardPage(
             ),
             
             
-            # Season Analysis ---------------------------------------------------------
-            
-            tabItem(tabName = 'season',
-                    fluidPage(
-                        selectInput('season_filter', 'Select Season:',
-                                    season_filter),
-                        fluidRow(
-                            shinydashboard::box(title = 'Batting Analysis',width = 8,solidHeader = T, background = 'black',
-                                                tabBox(width = 12,
-                                                       title = NULL,
-                                                       # The id lets us use input$tabset1 on the server to find the current tab
-                                                       id = 'tabset1', height = '260px',
-                                                       tabPanel(tags$p('Most Runs', style = 'color:black;font-weight:bold;'), 
-                                                                plotOutput('top_10_batsman', height = 200)),
-                                                       tabPanel(tags$p('Most Hundreds', style = 'color:black;font-weight:bold;'), 
-                                                                plotOutput('most_100s', height = 200)),
-                                                       tabPanel(tags$p('Most Fifties', style = 'color:black;font-weight:bold;'), 
-                                                                plotOutput('most_50s', height = 200)),
-                                                       tabPanel(tags$p('Most Sixes', style = 'color:black;font-weight:bold;'), 
-                                                                plotOutput('top_10_6s', height = 200)),
-                                                       tabPanel(tags$p('Most Fours', style = 'color:black;font-weight:bold;'), 
-                                                                plotOutput('top_10_4s', height = 200))
-                                                )
-                            ),
-                            shinydashboard::box(title = 'Bowling Analysis',width = 8,solidHeader = T, background = 'black',
-                                                tabBox(width = 12,
-                                                       title = NULL,
-                                                       # The id lets us use input$tabset1 on the server to find the current tab
-                                                       id = 'tabset2', height = '270px',
-                                                       tabPanel(tags$p('Most Wickets', style = 'color:black;font-weight:bold;'), 
-                                                                plotOutput('top_10_bowlers', height = 210)),
-                                                       tabPanel(tags$p('Most Maidens', style = 'color:black;font-weight:bold;'), 
-                                                                plotOutput('maiden', height = 210)),
-                                                       tabPanel(tags$p('Most Dot Balls', style = 'color:black;font-weight:bold;'), 
-                                                                plotOutput('dot_balls', height = 210)),
-                                                       tabPanel(tags$p('Most 4 Wickets', style = 'color:black;font-weight:bold;'),
-                                                                plotOutput('wickets_4', height = 210))
-                                                )
-                            )
-                        )
-                    )
-            ),
-            
             # Player performance ------------------------------------------------------
             
             tabItem(tabName = 'Teamwins',           
-                              tags$h3("Team Wins & Points"),
-                              div(style = "float:left;width:36%;",plotOutput("wins_bar_plot")),
-                              div(style = "float:right;width:64%;",plotOutput("points_bar_plot"))
+                    tags$h3("Team Wins & Points"),
+                    div(style = "float:left;width:36%;",plotOutput("wins_bar_plot")),
+                    div(style = "float:right;width:64%;",plotOutput("points_bar_plot"))
                     
             )
         )
@@ -188,6 +202,44 @@ server <- function(input, output) {
             geom_bar(stat = "identity",size=3)+theme_classic()+theme(axis.text.x=element_text(
                 color = "white"),legend.text = element_text(size = 14),axis.title = element_text(size=14))+
             geom_text(aes(Teams,(Points+1),label=Points,size=7)) })
+    
+    
+    # Overview Outputs --------------------------------------------------------
+    
+    output$matches <- renderInfoBox({
+        infoBox('# Matches', df %>% summarise(matches = n_distinct(match_id)),
+                icon = icon('handshake'), color = 'olive', fill = T, width = 1)
+    })
+    output$seasons <- renderInfoBox({
+        infoBox('# Season', df %>% summarise(matches = n_distinct(season)),
+                icon = icon('trophy'), color = 'olive', fill = T, width = 1)
+    })
+    output$runs <- renderInfoBox({
+        infoBox('# Runs', df %>% summarise(runs = sum(total_runs)), 
+                icon = icon('walking'), color = 'olive', fill = T, width = 1)
+    })
+    output$teams <- renderInfoBox({
+        infoBox('# Teams', df %>% summarise(teams = n_distinct(batting_team)), 
+                icon = icon('users'), color = 'olive', fill = T, width = 1)
+    })
+    output$wickets <- renderInfoBox({
+        infoBox('# Wickets', df %>% filter(dismissal_kind %in% 
+                                               c('bowled', 'caught', 'caught and bowled', 'lbw', 'hit wicket', 'stumped'))%>%  summarise(wickets = n()), 
+                icon = icon('hand-pointer'), color = 'olive', fill = T, width = 1)
+    })
+    output$fours <- renderInfoBox({
+        infoBox('# Fours', filter(df, batsman_runs == 4) %>% summarise(fours = n()), 
+                icon = icon('dice-four'), color = 'olive', fill = T, width = 1)
+    })
+    output$sixes <- renderInfoBox({
+        infoBox('# Sixes', filter(df, batsman_runs == 6) %>% summarise(fours = n()), 
+                icon = icon('dice-six'), color = 'olive', fill = T, width = 1)
+    })
+    output$mom <- renderInfoBox({
+        infoBox('Most MOM', tags$p((df %>% group_by(player_of_match) %>% summarise(num = n_distinct(match_id)) %>% 
+                                        arrange(desc(num)) %>% head(1)), style = 'font-size: 90%;'),
+                icon = icon('user-plus'), color = 'olive', fill = T, width = 1)
+    })
     
     
     # Season analysis --------------------------------------------------------
@@ -274,118 +326,6 @@ server <- function(input, output) {
             geom_text(aes(label = as.numeric(Four_wickets), vjust = 2)) +
             labs(x = 'Bowler', y = '# of times 4 Wickets') + theme(axis.text.x = element_text(angle = 25, hjust = 1))
     })
-    
-    # Performance tab Outputs -----------------------------------------------------
-    
-    output$batting_opponents <- renderUI({
-        
-        if(nrow(filter(df,batsman == input$player1)) == 0) 
-            return('No data to show')
-        
-        span(style = 'color:black;font-weight:bold;font-size: 80%;', DT::DTOutput('batting_opp_table'))
-    })
-    
-    output$batting_opp_table <- DT::renderDataTable(
-        {
-            data.frame(
-                filter(df,batsman == input$player1) %>% group_by(bowling_team) %>%
-                    summarise(matches = n_distinct(match_id), runs = sum(batsman_runs)) %>%
-                    left_join(filter(df,batsman == input$player1) %>% group_by(match_id, bowling_team) %>% summarise(runs = sum(batsman_runs)) %>%
-                                  group_by(bowling_team) %>% summarise(max_runs = max(runs)), by = 'bowling_team') %>%
-                    left_join(filter(filter(df,batsman == input$player1) %>% group_by(match_id, bowling_team) %>% summarise(runs = sum(batsman_runs)) %>%
-                                         group_by(bowling_team), runs >= 50 & runs < 100) %>% summarise(fifties = n()), by = 'bowling_team') %>%
-                    left_join(filter(filter(df,batsman == input$player1) %>% group_by(match_id, bowling_team) %>% summarise(runs = sum(batsman_runs)) %>%
-                                         group_by(bowling_team), runs >= 100) %>% summarise(hundreds = n()), by = 'bowling_team') %>% 
-                    replace_na(list(fifties = 0, hundreds = 0))
-            ) 
-            
-        }, options = list(searching = FALSE, paging = FALSE, dom = 't', bSort=FALSE), rownames = NULL,
-        colnames = c('Matches', 'Runs', 'HS', '50s', '100s')
-    ) 
-    
-    output$bowling_opponents <- renderUI({
-        
-        if(nrow(filter(df,bowler == input$player1)) == 0) 
-            return('No data to show')
-        
-        span(style = 'color:black;font-weight:bold;font-size: 80%;', DT::DTOutput('bowling_opp_table'))
-    })
-    
-    output$bowling_opp_table <- DT::renderDataTable(
-        {
-            data.frame(
-                filter(df,bowler == input$player1) %>% group_by(batting_team) %>%
-                    summarise(matches = n_distinct(match_id,inning), runs = sum(total_runs)) %>%
-                    left_join(filter(df,bowler == input$player1) %>% group_by(batting_team) %>% 
-                                  summarise(overs = n_distinct(match_id, over)), by = 'batting_team') %>%
-                    left_join(filter(df, bowler == input$player1 & dismissal_kind %in% c('bowled', 'caught', 'caught and bowled', 
-                                                                                         'lbw','hit wicket','stumped')) %>% group_by(batting_team) %>% summarise(wickets = n()), by = 'batting_team')%>%
-                    left_join( setDT(filter(df, bowler == input$player1  & dismissal_kind %in% c('bowled', 'caught', 'caught and bowled',
-                                                                                                 'lbw','hit wicket','stumped')) %>% group_by(batting_team, match_id) %>% summarise(wickets = n()) %>%
-                                         left_join(filter(df, bowler == input$player1) %>% group_by(bowler, match_id) %>% summarise(runs_given = sum(total_runs)
-                                         ),  by = 'match_id') %>% arrange(desc(wickets), runs_given) %>% ungroup() %>%  select(c(1,3,5)))
-                               [order(-wickets), head(.SD, 1), by = batting_team] %>% unite('Best', wickets:runs_given, sep = '/'), by = 'batting_team'
-                    ) %>% replace_na(list(wickets = 0, best = 'NA'))
-            ) 
-            
-        }, options = list(searching = FALSE, paging = FALSE, dom = 't', bSort=FALSE), rownames = NULL,
-        colnames = c('Matches', 'Runs Given', 'Overs', 'Wickets', 'Best')
-    ) 
-    
-    output$batting_venue <- renderUI({
-        
-        if(nrow(filter(df,batsman == input$player1)) == 0) 
-            return('No data to show')
-        
-        span(style = 'color:black;font-weight:bold;font-size: 80%;', DT::DTOutput('batting_venue_table'))
-    })
-    
-    output$batting_venue_table <- DT::renderDataTable(
-        {
-            data.frame(
-                filter(df,batsman == input$player1) %>% group_by(city) %>%
-                    summarise(matches = n_distinct(match_id), runs = sum(batsman_runs)) %>% arrange(desc(matches)) %>% head(15) %>%
-                    left_join(filter(df,batsman == input$player1) %>% group_by(match_id, city) %>% summarise(runs = sum(batsman_runs)) %>%
-                                  group_by(city) %>% summarise(max_runs = max(runs)), by = 'city') %>%
-                    left_join(filter(filter(df,batsman == input$player1) %>% group_by(match_id, city) %>% summarise(runs = sum(batsman_runs)) %>%
-                                         group_by(city), runs >= 50 & runs < 100) %>% summarise(fifties = n()), by = 'city') %>%
-                    left_join(filter(filter(df,batsman == input$player1) %>% group_by(match_id, city) %>% summarise(runs = sum(batsman_runs)) %>%
-                                         group_by(city), runs >= 100) %>% summarise(hundreds = n()), by = 'city') %>% 
-                    replace_na(list(fifties = 0, hundreds = 0))
-            ) 
-            
-        }, options = list(searching = FALSE, paging = FALSE, dom = 't', bSort=FALSE), rownames = NULL,
-        colnames = c('Matches', 'Runs', 'HS', '50s', '100s')
-    ) 
-    
-    output$bowling_venue <- renderUI({
-        
-        if(nrow(filter(df,bowler == input$player1)) == 0) 
-            return('No data to show')
-        
-        span(style = 'color:black;font-weight:bold;font-size: 80%;', DT::DTOutput('bowling_venue_table'))
-    })
-    
-    output$bowling_venue_table <- DT::renderDataTable(
-        {
-            data.frame(
-                filter(df,bowler == input$player1) %>% group_by(city) %>%
-                    summarise(matches = n_distinct(match_id,inning), runs = sum(total_runs)) %>% arrange(desc(matches)) %>% head(15) %>%
-                    left_join(filter(df,bowler == input$player1) %>% group_by(city) %>% 
-                                  summarise(overs = n_distinct(match_id, over)), by='city') %>%
-                    left_join(filter(df, bowler == input$player1 & dismissal_kind %in% c('bowled', 'caught', 'caught and bowled', 
-                                                                                         'lbw','hit wicket','stumped')) %>% group_by(city) %>% summarise(wickets = n()), by = 'city')%>%
-                    left_join(setDT(filter(df, bowler == input$player1  & dismissal_kind %in% c('bowled', 'caught', 
-                                                                                                'caught and bowled', 'lbw','hit wicket','stumped')) %>% group_by(city, match_id) %>% summarise(wickets = n()) %>%
-                                        left_join(filter(df, bowler == input$player1) %>% group_by(bowler, match_id) %>% summarise(runs_given = 
-                                                                                                                                       sum(total_runs)), by = 'match_id') %>% arrange(desc(wickets), runs_given) %>% ungroup() %>% 
-                                        select(c(1,3,5)) )[order(-wickets), head(.SD, 1), by = city] %>%
-                                  unite('Best', wickets:runs_given, sep = '/'), by = 'city') %>% replace_na(list(wickets = 0, best = 'NA'))
-            ) 
-            
-        }, options = list(searching = FALSE, paging = FALSE, dom = 't', bSort=FALSE), rownames = NULL,
-        colnames = c('Matches', 'Runs Given', 'Overs', 'Wickets', 'Best')
-    ) 
     
 }
 
